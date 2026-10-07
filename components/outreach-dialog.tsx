@@ -56,12 +56,13 @@ function OutreachForm({ target, onSaved }: { target: OutreachTarget; onSaved?: (
   const [subject, setSubject] = useState(initial.subject);
   const [body, setBody] = useState(initial.body);
   const [loading, setLoading] = useState(false);
+  const [source, setSource] = useState<"ai" | "template" | null>(null);
 
   async function generate() {
     setLoading(true);
     saveSender(sender);
     try {
-      const res = await api<{ subject: string; body: string }>("/api/outreach", {
+      const res = await api<{ subject: string; body: string; source: "ai" | "template" }>("/api/outreach", {
         method: "POST",
         json: {
           business: target.business,
@@ -72,6 +73,7 @@ function OutreachForm({ target, onSaved }: { target: OutreachTarget; onSaved?: (
       });
       setSubject(res.subject);
       setBody(res.body);
+      setSource(res.source);
       onSaved?.(`Subject: ${res.subject}\n\n${res.body}`);
     } catch (err) {
       toast.error((err as Error).message);
@@ -133,6 +135,11 @@ function OutreachForm({ target, onSaved }: { target: OutreachTarget; onSaved?: (
               disabled={loading}
               placeholder={loading ? "Drafting…" : ""}
             />
+            {source === "template" && (
+              <p className="text-xs text-muted-foreground">
+                AI drafting is unavailable right now, so this is a template built from the site findings.
+              </p>
+            )}
           </div>
         ) : (
           <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
