@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { api, loadSender, saveSender, type Sender } from "@/lib/client";
 import type { Business, Signals } from "@/lib/types";
+import { gmailComposeUrl } from "@/lib/utils";
 
 export interface OutreachTarget {
   business: Business;
@@ -83,9 +84,7 @@ function OutreachForm({ target, onSaved }: { target: OutreachTarget; onSaved?: (
   }
 
   const email = target.business.email ?? target.signals?.emails[0] ?? null;
-  const mailto = email
-    ? `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-    : null;
+  const mailto = email ? gmailComposeUrl(email, subject, body) : null;
 
   return (
     <>
@@ -167,9 +166,11 @@ function OutreachForm({ target, onSaved }: { target: OutreachTarget; onSaved?: (
               {mailto && (
                 <a
                   href={mailto}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex h-10 items-center gap-2 rounded-lg border px-3 text-sm font-medium hover:bg-accent"
                 >
-                  <MailIcon className="size-4" /> Open in mail
+                  <MailIcon className="size-4" /> Open in Gmail
                 </a>
               )}
             </div>

@@ -6,6 +6,7 @@ import {
   DownloadIcon,
   ExternalLinkIcon,
   MailIcon,
+  MapPinIcon,
   PhoneIcon,
   PlusIcon,
   RadarIcon,
@@ -20,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/lib/client";
 import { LEAD_STATUSES, type Business, type LeadStatus, type Signals } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, gmailComposeUrl, googleProfileUrl } from "@/lib/utils";
 
 interface Lead extends Business {
   id: number;
@@ -285,7 +286,7 @@ export function Pipeline() {
                   </a>
                 )}
                 {l.email && (
-                  <a href={`mailto:${l.email}`} className="flex min-w-0 items-center gap-1.5 font-data text-xs hover:text-forge">
+                  <a href={gmailComposeUrl(l.email)} target="_blank" rel="noopener noreferrer" className="flex min-w-0 items-center gap-1.5 font-data text-xs hover:text-forge">
                     <MailIcon className="size-3 shrink-0 text-muted-foreground" />
                     <span className="truncate">{l.email}</span>
                   </a>
@@ -301,6 +302,14 @@ export function Pipeline() {
                     <span className="truncate">{hostOf(l.website)}</span>
                   </a>
                 )}
+                <a
+                  href={googleProfileUrl(l.name, l.address)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 font-data text-xs text-muted-foreground hover:text-forge"
+                >
+                  <MapPinIcon className="size-3 shrink-0" /> Google profile
+                </a>
                 <div className="mt-2 flex flex-wrap gap-2">
                   <select
                     aria-label={`Status for ${l.name}`}

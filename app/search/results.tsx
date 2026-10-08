@@ -8,6 +8,7 @@ import {
   BookmarkPlusIcon,
   ExternalLinkIcon,
   MailIcon,
+  MapPinIcon,
   PhoneIcon,
   PlusIcon,
   RadarIcon,
@@ -23,7 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { api, pool } from "@/lib/client";
 import { tierOf } from "@/lib/score";
 import type { Business, Signals, Tier } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, gmailComposeUrl, googleProfileUrl } from "@/lib/utils";
 
 interface Row extends Business {
   score: number;
@@ -371,7 +372,9 @@ function ResultsView({ niche, location }: { niche: string; location: string }) {
                   )}
                   {(r.email ?? r.signals?.emails[0]) && (
                     <a
-                      href={`mailto:${r.email ?? r.signals?.emails[0]}`}
+                      href={gmailComposeUrl((r.email ?? r.signals?.emails[0])!)}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex min-w-0 items-center gap-1.5 font-data text-xs hover:text-forge"
                     >
                       <MailIcon className="size-3 shrink-0 text-muted-foreground" />
@@ -389,6 +392,14 @@ function ResultsView({ niche, location }: { niche: string; location: string }) {
                       <span className="truncate">{hostOf(r.website)}</span>
                     </a>
                   )}
+                  <a
+                    href={googleProfileUrl(r.name, r.address)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 font-data text-xs text-muted-foreground hover:text-forge"
+                  >
+                    <MapPinIcon className="size-3 shrink-0" /> Google profile
+                  </a>
                   {!r.phone && !r.email && !r.website && <span className="text-xs text-muted-foreground">No contact info</span>}
                 </div>
 
